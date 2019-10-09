@@ -5,7 +5,7 @@ import logo from '../assets/Logo.png';
 
 export default function Home({ navigation }){
     function handleSubmit() {
-        navigation.navigate('Cadastro');
+        navigation.navigate('Signup');
     }
     return <View style={styles.container}>
        <Image source={logo}/>
