@@ -111,7 +111,7 @@ export default class SignUp extends Component {
         const orgao = this.state.orgao;
         const civil = this.state.civil;
         const deficiencia = this.state.deficiencia;
-        return <ScrollView>
+        return <ScrollView style={{backgroundColor: '#c4def6'}}>
         <SafeAreaView style={styles.safe}>
         <Image style={styles.logo} source={logo}/>
         <Formik
@@ -277,6 +277,7 @@ const styles = StyleSheet.create({
         borderColor: "black",
         padding: 10,
         marginBottom: 3,
+        backgroundColor: 'white',
     },
     erro: {
         color: 'red',
@@ -309,6 +310,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         marginHorizontal: 20,
         marginVertical:5,
+        backgroundColor: 'white',
     },
     dropText: {
         textAlign: 'center',
