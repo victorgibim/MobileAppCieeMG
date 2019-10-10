@@ -1,16 +1,21 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { 
     StyleSheet, 
     TextInput, 
     Text,
+    ScrollView,
     View, 
     SafeAreaView, 
     ActivityIndicator, 
     Button,
     Picker,
+    Image,
+    TouchableOpacity
 } from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+
+import logo from '../assets/Logo.png';
 
 const validationSchema = yup.object().shape({
     name: yup
@@ -60,12 +65,57 @@ const validationSchema = yup.object().shape({
     .number()
     .label('RG')
     .required(),
+    ctps: yup
+    .number()
+    .label('CTPS')
+    .required(),
+    pai: yup
+    .string()
+    .label('Pai')
+    .test(
+        'test-name', 'Nome não Pode conter Número',
+        function(value) {
+            const nameRegex = /^([a-z A-Z])+$/;
+            let isValidName = nameRegex.test(value);
+            if(!isValidName) {
+                return false;
+            }
+            return true;
+        }),
+    mae: yup
+    .string()
+    .required()
+    .label('Nome da Mãe')
+    .test(
+        'test-name', 'Nome não Pode conter Número',
+        function(value) {
+            const nameRegex = /^([a-z A-Z])+$/;
+            let isValidName = nameRegex.test(value);
+            if(!isValidName) {
+                return false;
+            }
+            return true;
+        }
+    ),
 })
 
-export default () => (
-    <SafeAreaView style={styles.safe}>
+export default class SignUp extends Component { 
+    state = {
+        sexo: 'masculino',
+        orgao: 'ssp',
+        civil: 'solteiro',
+        deficiencia: 'nao',
+    }
+    render(){
+        const sexo = this.state.sexo;
+        const orgao = this.state.orgao;
+        const civil = this.state.civil;
+        const deficiencia = this.state.deficiencia;
+        return <ScrollView>
+        <SafeAreaView style={styles.safe}>
+        <Image style={styles.logo} source={logo}/>
         <Formik
-            initialValues={{ name: '', email: '', password: '', cpg: '', rg: '' }}
+            initialValues={{ name: '', email: '', password: '', cpg: '', rg: '', sexo: '', orgao: '', ctps: '', pai: '', mae: '', civil: '', deficiencia: '' }}
             onSubmit={(values, actions) =>{
                 alert(JSON.stringify(values));
                 setTimeout(() => {
@@ -83,6 +133,7 @@ export default () => (
                     />
                     <Text style={{ color: 'red' }}>{formikProps.errors.name}</Text>                        
                     </View>
+
                     <View style={styles.view}>
                     <Text style={{ marginBottom: 3 }}>CPF</Text>
                     <TextInput style={styles.input} placeholder="CPF"
@@ -100,6 +151,45 @@ export default () => (
                     />
                     <Text style={{ color: 'red' }}>{formikProps.errors.rg}</Text>                        
                     </View>
+
+                    <Text style={{marginBottom: 3, marginVertical: 5, marginHorizontal: 20}}>Orgão Expedidor</Text>    
+                    <View style={styles.drop}>
+                        <Picker  style={styles.input} selectedValue={this.state.orgao}
+                        onValueChange={(itemValue, itemIndex) =>{
+                            this.setState({orgao: itemValue})
+                        }}>
+                            <Picker.Item style={styles.dropText} label= "SSP" value= "ssp"/>
+                            <Picker.Item style={styles.dropText} label= "Policia Civil" value= "pc"/>
+                        </Picker>
+                    </View>
+
+                    <View style={styles.view}>
+                    <Text style={{ marginBottom: 3 }}>Carteira de Trabalho</Text>
+                    <TextInput style={styles.input} placeholder="Carteira de Trabalho"
+                    onChangeText={formikProps.handleChange("CTPS")}
+                    keyboardType='numeric'
+                    />
+                    <Text style={{ color: 'red' }}>{formikProps.errors.ctps}</Text>                        
+                    </View>
+                    
+                    <View style={styles.view}>
+                    <Text style={{ marginBottom: 3 }}>Nome do Pai</Text>
+                    <TextInput style={styles.input} placeholder="Nome do Pai"
+                    onChangeText={formikProps.handleChange("pai")}
+                    />
+                    <Text style={{ color: 'red' }}>{formikProps.errors.pai}</Text>                        
+                    </View>
+
+                    <View style={styles.view}>
+                    <Text style={{ marginBottom: 3 }}>Nome da Mãe</Text>
+                    <TextInput style={styles.input} placeholder="Nome da Mãe"
+                    onChangeText={formikProps.handleChange("mae")}
+                    />
+                    <Text style={{ color: 'red' }}>{formikProps.errors.mae}</Text>                        
+                    </View>
+
+
+
                     <View style={styles.view}>
                         <Text style={{marginBottom: 3}}>E-mail</Text>
                         <TextInput placeholder="example@example.com" style={styles.input}
@@ -110,6 +200,7 @@ export default () => (
                         {formikProps.touched.email && formikProps.errors.email}
                         </Text>
                     </View>
+
                     <View style={styles.view}>
                         <Text style={{marginBottom: 3}}>Senha</Text>
                         <TextInput  placeholder="Senha" style={styles.input}
@@ -121,23 +212,61 @@ export default () => (
                         {formikProps.touched.password && formikProps.errors.password}
                         </Text>
                     </View>
-                    <View>
-                        <Picker  >
-                            <Picker.Item label= "Masculino" value= "masculino"/>
-                            <Picker.Item label= "Feminino" value= "feminino"/>
+
+                    <Text style={{marginBottom: 3, marginVertical: 5, marginHorizontal: 20}}>Sexo</Text>    
+                    <View style={styles.drop}>
+                        <Picker  selectedValue={this.state.sexo} 
+                            onValueChange={(itemValue, itemIndex) => {
+                            this.setState({sexo: itemValue})
+                        }}>
+                            <Picker.Item style={styles.dropText} label= "Masculino" value= "masculino"/>
+                            <Picker.Item style={styles.dropText} label= "Feminino" value= "feminino"/>
                         </Picker>
                     </View>
+
+                    <Text style={{marginBottom: 3, marginVertical: 5, marginHorizontal: 20}}>Estado Civil</Text>    
+                    <View style={styles.drop}>
+                        <Picker  selectedValue={this.state.civil} 
+                            onValueChange={(itemValue, itemIndex) => {
+                            this.setState({civil: itemValue})
+                        }}>
+                            <Picker.Item style={styles.dropText} label= "Solteiro(a)" value= "solteiro"/>
+                            <Picker.Item style={styles.dropText} label= "Casado(a)" value= "casado"/>
+                            <Picker.Item style={styles.dropText} label= "Amaziado(a)" value= "amaziado"/>
+                            <Picker.Item style={styles.dropText} label= "Divorciado(a)" value= "divorciado"/>
+                            <Picker.Item style={styles.dropText} label= "Víuvo(a)" value= "viuvo"/>
+                        </Picker>
+                    </View>
+
+                    <Text style={{marginBottom: 3, marginVertical: 5, marginHorizontal: 20}}>Possui alguma deficiência?</Text>    
+                    <View style={styles.drop}>
+                        <Picker  selectedValue={this.state.deficiencia} 
+                            onValueChange={(itemValue, itemIndex) => {
+                            this.setState({deficiencia: itemValue})
+                        }}>
+                            <Picker.Item style={styles.dropText} label= "Não" value= "nao"/>
+                            <Picker.Item style={styles.dropText} label= "Física" value= "fisica"/>
+                            <Picker.Item style={styles.dropText} label= "Auditiva" value= "auditiva"/>
+                            <Picker.Item style={styles.dropText} label= "Visual" value= "visual"/>
+                            <Picker.Item style={styles.dropText} label= "Mental" value= "mental"/>
+                            <Picker.Item style={styles.dropText} label= "Mútipla" value= "mutipla"/>
+                        </Picker>
+                    </View>
+
                     {formikProps.isSubmitting ? (
                         <ActivityIndicator />
                     ) : (
 
-                    <Button title="Submit" onPress={formikProps.handleSubmit} />
+                    <TouchableOpacity onPress={formikProps.handleSubmit} style={styles.buttom}>
+                        <Text style={styles.buttomText}>Cadastrar</Text>
+                    </TouchableOpacity>
                     )}
                 </React.Fragment>
             )}
         </Formik>
     </SafeAreaView>
-);
+    </ScrollView>
+}}
 
 const styles = StyleSheet.create({
     safe: {
@@ -155,5 +284,35 @@ const styles = StyleSheet.create({
     view: {
         marginHorizontal: 20,
         marginVertical: 5,
+    },
+    logo:{
+        height: 50,
+        resizeMode: "contain",
+        alignSelf: 'center',
+        marginTop: 3,
+    },
+    buttom: {
+        height: 50,
+        marginTop: 30,
+        padding: 10,
+        backgroundColor: '#0000ff',
+        marginHorizontal: 20,
+        marginBottom: 20,
+    },
+    buttomText:{
+        fontSize: 20,
+        color: '#FFF',
+        textAlign: 'center',
+    },
+    drop: {
+        borderWidth: 1,
+        marginBottom: 20,
+        marginHorizontal: 20,
+        marginVertical:5,
+    },
+    dropText: {
+        textAlign: 'center',
+        color: 'black',
+        
     },
 })
