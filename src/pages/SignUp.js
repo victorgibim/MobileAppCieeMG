@@ -240,7 +240,7 @@ export default class SignUp extends Component {
 
                     <Text style={{marginBottom: 3, marginVertical: 5, marginHorizontal: 20}}>Possui alguma deficiência?</Text>    
                     <View style={styles.drop}>
-                        <Picker  selectedValue={this.state.deficiencia} 
+                        <Picker  style={styles.input} selectedValue={this.state.deficiencia} 
                             onValueChange={(itemValue, itemIndex) => {
                             this.setState({deficiencia: itemValue})
                         }}>
@@ -251,6 +251,14 @@ export default class SignUp extends Component {
                             <Picker.Item style={styles.dropText} label= "Mental" value= "mental"/>
                             <Picker.Item style={styles.dropText} label= "Mútipla" value= "mutipla"/>
                         </Picker>
+                    </View>
+
+                    <Text style={styles.text}>Endereço</Text>
+                    <View style={styles.view}>
+                    <Text style={{marginBottom: 3, marginVertical: 5, marginHorizontal: 20}}>CEP</Text>    
+
+                    <TextInput style={styles.input} placeholder='CEP'/>    
+
                     </View>
 
                     {formikProps.isSubmitting ? (
@@ -317,4 +325,14 @@ const styles = StyleSheet.create({
         color: 'black',
         
     },
+    text:{
+        borderWidth:1,
+        marginBottom: 20,
+        marginHorizontal: 20,
+        marginVertical: 5,
+        height: 30,
+        textAlign: "center",
+        backgroundColor: 'red',
+        
+    }
 })
