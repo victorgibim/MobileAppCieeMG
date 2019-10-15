@@ -141,24 +141,24 @@ export default class Endereco extends Component {
             {formikProps => (
                 <React.Fragment>
                     <View style={styles.view}>
-                    <Text style={{ marginBottom: 3 }}>CEP</Text>
-                    <TextInput style={styles.input} placeholder="CEP"
+                    <Text style={{ marginBottom: 3 }}>Escola onde estuda ou estudou</Text>
+                    <TextInput style={styles.input} placeholder="Escola onde estuda ou estudou"
                     onChangeText={formikProps.handleChange("cep")}
                     />
                     <Text style={{ color: 'red' }}>{formikProps.errors.cep}</Text>                        
                     </View>
 
                     <View style={styles.view}>
-                    <Text style={{ marginBottom: 3 }}>Logradouro</Text>
-                    <TextInput style={styles.input} placeholder="Logradouro"
+                    <Text style={{ marginBottom: 3 }}>Curso</Text>
+                    <TextInput style={styles.input} placeholder="Curso"
                     onChangeText={formikProps.handleChange("logradouro")}
                     />
                     <Text style={{ color: 'red' }}>{formikProps.errors.logradouro}</Text>                        
                     </View>
                     
                     <View style={styles.view}>
-                    <Text style={{ marginBottom: 3 }}>Numero</Text>
-                    <TextInput style={styles.input} placeholder="Numero"
+                    <Text style={{ marginBottom: 3 }}>Ano de formatura</Text>
+                    <TextInput style={styles.input} placeholder="Ano de formatura"
                     onChangeText={formikProps.handleChange("numero")}
                     keyboardType='numeric'
                     />
@@ -166,98 +166,44 @@ export default class Endereco extends Component {
                     </View>
 
                     <View style={styles.view}>
-                    <Text style={{ marginBottom: 3 }}>Complemento</Text>
-                    <TextInput style={styles.input} placeholder="Complemento"
+                    <Text style={{ marginBottom: 3 }}>Semestre de formatura</Text>
+                    <TextInput style={styles.input} placeholder="Semestre de formatura"
                     onChangeText={formikProps.handleChange("complemento")}
                     />
 
                     </View>
                     
                     <View style={styles.view}>
-                    <Text style={{ marginBottom: 3 }}>UF</Text>
-                    <TextInput style={styles.input} placeholder="UF"
+                    <Text style={{ marginBottom: 3 }}>Mês da formatura</Text>
+                    <TextInput style={styles.input} placeholder="Mês da formatura"
                     onChangeText={formikProps.handleChange("uf")}
                     />
                     <Text style={{ color: 'red' }}>{formikProps.errors.uf}</Text>                        
                     </View>
 
                     <View style={styles.view}>
-                    <Text style={{ marginBottom: 3 }}>Bairro</Text>
-                    <TextInput style={styles.input} placeholder="Bairro"
+                    <Text style={{ marginBottom: 3 }}>Periodo/Ano/Ciclo/Módulo</Text>
+                    <TextInput style={styles.input} placeholder="Periodo/Ano/Ciclo/Módulo"
                     onChangeText={formikProps.handleChange("bairro")}
                     />
                     <Text style={{ color: 'red' }}>{formikProps.errors.bairro}</Text>                        
                     </View>
 
                     <View style={styles.view}>
-                    <Text style={{ marginBottom: 3 }}>Cidade</Text>
-                    <TextInput style={styles.input} placeholder="Cidade"
+                    <Text style={{ marginBottom: 3 }}>Horário de Estudo</Text>
+                    <TextInput style={styles.input} placeholder="Horário de Estudo"
                     onChangeText={formikProps.handleChange("cidade")}
                     />
                     <Text style={{ color: 'red' }}>{formikProps.errors.cidade}</Text>                        
                     </View>
 
-                    <View style={styles.view}>
-                    <Text style={{ marginBottom: 3 }}>Telefone 1</Text>
-                    <TextInput style={styles.input} placeholder="Telefone 1"
-                    onChangeText={formikProps.handleChange("telefone1")}
-                    keyboardType='numeric'
-                    />
-                    <Text style={{ color: 'red' }}>{formikProps.errors.telefone1}</Text>                        
-                    </View>
-
-                    <View style={styles.view}>
-                    <Text style={{ marginBottom: 3 }}>Telefone 2</Text>
-                    <TextInput style={styles.input} placeholder="Telefone 2"
-                    onChangeText={formikProps.handleChange("telefone2")}
-                    keyboardType='numeric'
-                    />
-                    <Text style={{ color: 'red' }}>{formikProps.errors.telefone2}</Text>                        
-                    </View>
-                        
-
-                    
-                    <View style={styles.view}>
-                        <Text style={{marginBottom: 3}}>E-mail</Text>
-                        <TextInput placeholder="example@example.com" style={styles.input}
-                        onChangeText={formikProps.handleChange('email')}
-                        onBlur={formikProps.handleBlur('email')}
-                        />
-                        <Text style={styles.erro}>
-                        {formikProps.touched.email && formikProps.errors.email}
-                        </Text>
-                    </View>
-
-                    <View style={styles.view}>
-                        <Text style={{marginBottom: 3}}>Senha</Text>
-                        <TextInput  placeholder="Senha" style={styles.input}
-                        onChangeText={formikProps.handleChange('password')}
-                        onBlur={formikProps.handleBlur('password')}
-                        secureTextEntry
-                        />
-                        <Text style={styles.erro}>
-                        {formikProps.touched.password && formikProps.errors.password}
-                        </Text>
-                    </View>
-
-                    <View style={styles.view}>
-                        <Text style={{marginBottom: 3}}>Confirmar Senha</Text>
-                        <TextInput  placeholder="Confirmar Senha" style={styles.input}
-                        onChangeText={formikProps.handleChange('password')}
-                        onBlur={formikProps.handleBlur('password')}
-                        secureTextEntry
-                        />
-                        <Text style={styles.erro}>
-                        {formikProps.touched.password && formikProps.errors.password}
-                        </Text>
-                    </View>
 
                     {formikProps.isSubmitting ? (
                         <ActivityIndicator />
                     ) : (
 
                     <TouchableOpacity onPress={formikProps.handleSubmit} style={styles.buttom}>
-                        <Text style={styles.buttomText}>Avançar</Text>
+                        <Text style={styles.buttomText}>Cadastrar</Text>
                     </TouchableOpacity>
                     )}
                 </React.Fragment>

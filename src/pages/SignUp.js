@@ -60,15 +60,15 @@ const validationSchema = yup.object().shape({
     cpf: yup
     .number()
     .label('CPF')
-    .required(),
+    ,
     rg: yup
     .number()
     .label('RG')
-    .required(),
+    ,
     ctps: yup
     .number()
     .label('CTPS')
-    .required(),
+    ,
     pai: yup
     .string()
     .label('Pai')

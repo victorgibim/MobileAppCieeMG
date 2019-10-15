@@ -12,7 +12,11 @@ import {
 import logo from '../assets/Logo.png';
 
  class Cadastro extends Component {
+     
      constructor() {
+        function handleSubmit() {
+            navigation.navigate('Endereco');
+        }
          super();
          this.state = {
              name: '',
@@ -75,6 +79,7 @@ import logo from '../assets/Logo.png';
             }
          }
      }
+     
     render(){
         return <SafeAreaView style={styles.container}>
         <Image style={styles.logo} source={logo}/>
@@ -98,8 +103,8 @@ import logo from '../assets/Logo.png';
                 secureTextEntry={true} value={this.state.confirmPassword}
                 onChangeText={confirmPassword => this.setState({ confirmPassword })} />  
 
-            <TouchableOpacity onPress={() => {  }} style={styles.buttom}>
-                <Text style={styles.buttomText}>Cadastrar</Text>
+            <TouchableOpacity onPress={handleSubmit} style={styles.buttom}>
+                <Text style={styles.buttomText}>Avançar</Text>
             </TouchableOpacity>
 
         </View>
