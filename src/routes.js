@@ -10,9 +10,9 @@ import Academico from './pages/Academicos';
 
 const Routes = createAppContainer(
     createSwitchNavigator({
-        Home,
         Academico,
         Endereco,
+        Home,
         Signup,
         Cadastro,
     })

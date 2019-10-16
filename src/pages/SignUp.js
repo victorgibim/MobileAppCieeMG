@@ -188,7 +188,7 @@ export default class SignUp extends Component {
                     <Text style={{ color: 'red' }}>{formikProps.errors.mae}</Text>                        
                     </View>
 
-
+{/* 
 
                     <View style={styles.view}>
                         <Text style={{marginBottom: 3}}>E-mail</Text>
@@ -211,7 +211,7 @@ export default class SignUp extends Component {
                         <Text style={styles.erro}>
                         {formikProps.touched.password && formikProps.errors.password}
                         </Text>
-                    </View>
+                    </View> */}
 
                     <Text style={{marginBottom: 3, marginVertical: 5, marginHorizontal: 20}}>Sexo</Text>    
                     <View style={styles.drop}>
@@ -253,20 +253,14 @@ export default class SignUp extends Component {
                         </Picker>
                     </View>
 
-                    <Text style={styles.text}>Endereço</Text>
-                    <View style={styles.view}>
-                    <Text style={{marginBottom: 3, marginVertical: 5, marginHorizontal: 20}}>CEP</Text>    
 
-                    <TextInput style={styles.input} placeholder='CEP'/>    
-
-                    </View>
 
                     {formikProps.isSubmitting ? (
                         <ActivityIndicator />
                     ) : (
 
                     <TouchableOpacity onPress={formikProps.handleSubmit} style={styles.buttom}>
-                        <Text style={styles.buttomText}>Cadastrar</Text>
+                        <Text style={styles.buttomText}>Avançar</Text>
                     </TouchableOpacity>
                     )}
                 </React.Fragment>
