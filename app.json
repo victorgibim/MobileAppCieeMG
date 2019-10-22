@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "AirCiC",
+    "name": "CIEEMGAPP",
     "slug": "mobile",
     "privacy": "public",
     "sdkVersion": "35.0.0",
@@ -24,7 +24,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier" : "com.cieemg.CIEEMGAPP"
     }
   }
 }
