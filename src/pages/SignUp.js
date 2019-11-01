@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { 
-    StyleSheet, 
+    StyleSheet,
+    Keyboard, 
     TextInput, 
     Text,
     ScrollView,
@@ -10,12 +11,21 @@ import {
     Button,
     Picker,
     Image,
+    SubmitButton,
     TouchableOpacity
 } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { AsyncStorage } from 'react-native';
+// import styled from 'styled-components/native';
+// import { RectButton } from 'react-native-gesture-handler';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 
 import logo from '../assets/Logo.png';
+import api from '../assets/services/api';
+
+let parseFormats = ['MM-DD-YYYY'];
+let invalidDate = new Date('');
 
 const validationSchema = yup.object().shape({
     name: yup
@@ -79,18 +89,18 @@ const validationSchema = yup.object().shape({
     cep: yup
     .string()
     .required()
-    .label('CEP')
-    .test(
-        'test-name', 'Nome não Pode conter Número',
-        function(value) {
-            const nameRegex = /^([0-9_\.\-])+(([0-9\-])+\.)+([0-9]{3,6})+$/;
-            let isValidName = nameRegex.test(value);
-            if(!isValidName) {
-                return false;
-            }
-            return true;
-        }
-    ),
+    .label('CEP'),
+    // .test(
+    //     'test-name', 'Nome não Pode conter Número',
+    //     function(value) {
+    //         const nameRegex = /^([0-9_\.\-])+(([0-9\-])+\.)+([0-9]{3,6})+$/;
+    //         let isValidName = nameRegex.test(value);
+    //         if(!isValidName) {
+    //             return false;
+    //         }
+    //         return true;
+    //     }
+    // ),
     email: yup
     .string()
     .label('E-mail')
@@ -192,9 +202,14 @@ const validationSchema = yup.object().shape({
     .required()
     .label('Curso'),
     ano: yup
-    .number()
+    .date()
     .required()
-    .label('Ano de formatura'),
+    .label('Ano de formatura')
+    .transform(function(value, originalValue){
+        if(this.isType(value)) return value;
+        value = Moment(originalValue, parseFormats);
+        return value.isValid() ? value.toDate() : invalidDate;
+    }),
     semestre: yup
     .number()
     .required()
@@ -219,8 +234,39 @@ export default class SignUp extends Component {
         orgao: 'ssp',
         civil: 'solteiro',
         deficiencia: 'nao',
+        cep: [],
+    };
+    buscarCep = async () => {
+        const response = await api.get(`/cep/${cep}`);
+        const { cep } = response.data;
+        this.setState({ cep });
+        const data = {
+            id: response.data.id,
+            cep: response.data.cep,
+            logradouro: response.data.logradouro,
+            uf: response.data.uf,
+            bairro: response.data.bairro,
+            cidade: response.data.cidade,
+
+        };
+        console.log(buscarCep);
+        this.setState({
+            cep: [...cep, data, id],
+            cep: '',
+            id: '',
+        });
+        Keyboard.dismiss();
+    };
+    async componentDidMount() {
+        const cep = await AsyncStorage.getItem('cep');
+        if(cep) {
+            this.setState({cep: JSON.parse(cep)});
+        }
     }
+
+    
     render(){
+        const cep = this.state.cep;
         const sexo = this.state.sexo;
         const orgao = this.state.orgao;
         const civil = this.state.civil;
@@ -249,6 +295,7 @@ export default class SignUp extends Component {
                     <Text style={{ marginBottom: 3 }}>Nome</Text>
                     <TextInput style={styles.input} placeholder="Nome"
                     onChangeText={formikProps.handleChange("name")}
+                    autoCapitalize='words'
                     />
                     <Text style={{ color: 'red' }}>{formikProps.errors.name}</Text>                        
                     </View>
@@ -295,6 +342,7 @@ export default class SignUp extends Component {
                     <Text style={{ marginBottom: 3 }}>Nome do Pai</Text>
                     <TextInput style={styles.input} placeholder="Nome do Pai"
                     onChangeText={formikProps.handleChange("pai")}
+                    autoCapitalize='words'
                     />
                     <Text style={{ color: 'red' }}>{formikProps.errors.pai}</Text>                        
                     </View>
@@ -303,6 +351,7 @@ export default class SignUp extends Component {
                     <Text style={{ marginBottom: 3 }}>Nome da Mãe</Text>
                     <TextInput style={styles.input} placeholder="Nome da Mãe"
                     onChangeText={formikProps.handleChange("mae")}
+                    autoCapitalize='words'
                     />
                     <Text style={{ color: 'red' }}>{formikProps.errors.mae}</Text>                        
                     </View>
@@ -352,7 +401,10 @@ export default class SignUp extends Component {
                     <TextInput style={styles.input} placeholder="CEP"
                     onChangeText={formikProps.handleChange("cep")}
                     />
-                    <Text style={{ color: 'red' }}>{formikProps.errors.cep}</Text>                        
+                    <Text style={{ color: 'red' }}>{formikProps.errors.cep}</Text>  
+                    <TouchableOpacity style={styles.searchButton} onPress={this.buscarCep}>
+                        <Icon name="search" size={20} color="#FFF"/>
+                    </TouchableOpacity>
                     </View>
 
                     <View style={styles.view}>
@@ -524,7 +576,7 @@ export default class SignUp extends Component {
                     ) : (
 
                     <TouchableOpacity onPress={formikProps.handleSubmit} style={styles.buttom}>
-                        <Text style={styles.buttomText}>Avançar</Text>
+                        <Text style={styles.buttomText}>Cadastrar</Text>
                     </TouchableOpacity>
                     )}
                 </React.Fragment>
@@ -532,7 +584,13 @@ export default class SignUp extends Component {
         </Formik>
     </SafeAreaView>
     </ScrollView>
-}}
+}};
+
+// const SubmitButton = styled(RectButton)`
+// justify-content: center;
+// align-itens: center;
+// background: #fff;
+// `;
 
 const styles = StyleSheet.create({
     safe: {
@@ -592,5 +650,13 @@ const styles = StyleSheet.create({
         textAlign: "center",
         backgroundColor: 'red',
         
+    },
+    searchButton: {
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "blue",
+        borderRadius: 4,
+        marginLeft: 10,
+        padding: 12,
     }
 })
