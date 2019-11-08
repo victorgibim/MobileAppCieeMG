@@ -21,18 +21,18 @@ const validationSchema = yup.object().shape({
     cep: yup
     .string()
     .required()
-    .label('CEP')
-    .test(
-        'test-name', 'Nome não Pode conter Número',
-        function(value) {
-            const nameRegex = /^([0-9_\.\-])+(([0-9\-])+\.)+([0-9]{3,6})+$/;
-            let isValidName = nameRegex.test(value);
-            if(!isValidName) {
-                return false;
-            }
-            return true;
-        }
-    ),
+    .label('CEP'),
+    // .test(
+    //     // 'test-name', 'Nome não Pode conter Número',
+    //     // function(value) {
+    //     //     const nameRegex = /^([0-9_\.\-])+(([0-9\-])+\.)+([0-9]{3,6})+$/;
+    //     //     let isValidName = nameRegex.test(value);
+    //     //     if(!isValidName) {
+    //     //         return false;
+    //     //     }
+    //     //     return true;
+    //     // }
+    // ),
     email: yup
     .string()
     .label('E-mail')
@@ -121,6 +121,7 @@ const validationSchema = yup.object().shape({
         }
     ),
 })
+
 
 export default class Endereco extends Component { 
 

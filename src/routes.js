@@ -11,15 +11,13 @@ import Aviso from './pages/Aviso';
 
 const Routes = createAppContainer(
     createSwitchNavigator({
-        Aviso,
-        Academico,
-        Endereco,
-        Academico,
-        Home,
         Signup,
+        Aviso,
+        Home,
+        Endereco,
         Cadastro,
+        Academico,
     })
-
 );
 
 export default Routes;

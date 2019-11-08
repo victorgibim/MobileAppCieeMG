@@ -16,8 +16,6 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { AsyncStorage } from 'react-native';
-// import styled from 'styled-components/native';
-// import { RectButton } from 'react-native-gesture-handler';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 
@@ -89,18 +87,18 @@ const validationSchema = yup.object().shape({
     cep: yup
     .string()
     .required()
-    .label('CEP'),
-    // .test(
-    //     'test-name', 'Nome não Pode conter Número',
-    //     function(value) {
-    //         const nameRegex = /^([0-9_\.\-])+(([0-9\-])+\.)+([0-9]{3,6})+$/;
-    //         let isValidName = nameRegex.test(value);
-    //         if(!isValidName) {
-    //             return false;
-    //         }
-    //         return true;
-    //     }
-    // ),
+    .label('CEP')
+    .test(
+        'test-name', 'Nome não Pode conter Número',
+        function(value) {
+            const nameRegex = /^([0-9])$/;
+            let isValidName = nameRegex.test(value);
+            if(!isValidName) {
+                return false;
+            }
+            return true;
+        }
+    ),
     email: yup
     .string()
     .label('E-mail')
@@ -234,34 +232,24 @@ export default class SignUp extends Component {
         orgao: 'ssp',
         civil: 'solteiro',
         deficiencia: 'nao',
-        cep: [],
+        cep: '',
+        dados: {
+            logradouro: '',
+            bairro: '',
+            cidade: '',
+            uf: '',
+        }
     };
     buscarCep = async () => {
-        const response = await api.get(`/cep/${cep}`);
-        const { cep } = response.data;
-        this.setState({ cep });
-        const data = {
-            id: response.data.id,
-            cep: response.data.cep,
-            logradouro: response.data.logradouro,
-            uf: response.data.uf,
-            bairro: response.data.bairro,
-            cidade: response.data.cidade,
+     fetch(`http://api.cieemg.org.br:9001/cep/${this.state.cep}`).then(res => res.json()).then(data =>{
+         this.setState({
+             dados: data
+         })
+         console.log(data)
+     }).catch(err => {
+         console.log(err)
+     });
 
-        };
-        console.log(buscarCep);
-        this.setState({
-            cep: [...cep, data, id],
-            cep: '',
-            id: '',
-        });
-        Keyboard.dismiss();
-    };
-    async componentDidMount() {
-        const cep = await AsyncStorage.getItem('cep');
-        if(cep) {
-            this.setState({cep: JSON.parse(cep)});
-        }
     }
 
     
@@ -398,8 +386,8 @@ export default class SignUp extends Component {
 
                     <View style={styles.view}>
                     <Text style={{ marginBottom: 3 }}>CEP</Text>
-                    <TextInput style={styles.input} placeholder="CEP"
-                    onChangeText={formikProps.handleChange("cep")}
+                    <TextInput value={this.state.cep} style={styles.input} placeholder="CEP" keyboardType='numeric'
+                    onChangeText={cep => {this.setState({ cep })}}
                     />
                     <Text style={{ color: 'red' }}>{formikProps.errors.cep}</Text>  
                     <TouchableOpacity style={styles.searchButton} onPress={this.buscarCep}>
@@ -407,13 +395,24 @@ export default class SignUp extends Component {
                     </TouchableOpacity>
                     </View>
 
-                    <View style={styles.view}>
+                    {/* <View style={styles.view}>
                     <Text style={{ marginBottom: 3 }}>Logradouro</Text>
-                    <TextInput style={styles.input} placeholder="Logradouro"
+                    <TextInput style={styles.input} placeholder="Logradouro" 
                     onChangeText={formikProps.handleChange("logradouro")}
                     />
                     <Text style={{ color: 'red' }}>{formikProps.errors.logradouro}</Text>                        
+                    </View> */}
+
+                    <View style={styles.view}>
+                    <Text style={{ marginBottom: 3 }}>Logradouro</Text>
+                    <TextInput style={styles.textCep} placeholder={this.state.dados.logradouro} 
+                    placeholderTextColor={'black'} editable={false}
+                    />
+                    <Text style={{ color: 'red' }}>{formikProps.errors.logradouro}</Text>                        
                     </View>
+
+
+
                     
                     <View style={styles.view}>
                     <Text style={{ marginBottom: 3 }}>Numero</Text>
@@ -432,29 +431,61 @@ export default class SignUp extends Component {
 
                     </View>
                     
-                    <View style={styles.view}>
+                    {/* <View style={styles.view}>
                     <Text style={{ marginBottom: 3 }}>UF</Text>
                     <TextInput style={styles.input} placeholder="UF"
                     onChangeText={formikProps.handleChange("uf")}
                     />
                     <Text style={{ color: 'red' }}>{formikProps.errors.uf}</Text>                        
-                    </View>
+                    </View> */}
+
 
                     <View style={styles.view}>
+                    <Text style={{ marginBottom: 3 }}>UF</Text>
+                    <TextInput style={styles.textCep} placeholder={this.state.dados.uf} 
+                    placeholderTextColor={'black'} editable={false}
+                    />
+                    <Text style={{ color: 'red' }}>{formikProps.errors.uf}</Text>                        
+                    </View>
+
+
+
+                    {/* <View style={styles.view}>
                     <Text style={{ marginBottom: 3 }}>Bairro</Text>
                     <TextInput style={styles.input} placeholder="Bairro"
                     onChangeText={formikProps.handleChange("bairro")}
                     />
                     <Text style={{ color: 'red' }}>{formikProps.errors.bairro}</Text>                        
-                    </View>
+                    </View> */}
+
 
                     <View style={styles.view}>
+                    <Text style={{ marginBottom: 3 }}>Bairro</Text>
+                    <TextInput style={styles.textCep} placeholder={this.state.dados.bairro} 
+                    placeholderTextColor={'black'} editable={false}
+                    />
+                    <Text style={{ color: 'red' }}>{formikProps.errors.bairro}</Text>                        
+                    </View>
+
+
+                    {/* <View style={styles.view}>
                     <Text style={{ marginBottom: 3 }}>Cidade</Text>
                     <TextInput style={styles.input} placeholder="Cidade"
                     onChangeText={formikProps.handleChange("cidade")}
                     />
                     <Text style={{ color: 'red' }}>{formikProps.errors.cidade}</Text>                        
+                    </View> */}
+
+
+                    <View style={styles.view}>
+                    <Text style={{ marginBottom: 3 }}>Cidade</Text>
+                    <TextInput style={styles.textCep} placeholder={this.state.dados.cidade} 
+                    placeholderTextColor={'black'} editable={false}
+                    />
+                    <Text style={{ color: 'red' }}>{formikProps.errors.cidade}</Text>                        
                     </View>
+
+
 
                     <View style={styles.view}>
                     <Text style={{ marginBottom: 3 }}>Telefone 1</Text>
@@ -658,5 +689,13 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         marginLeft: 10,
         padding: 12,
+    },
+    textCep: {
+        color: 'black',
+        borderWidth: 1,
+        borderColor: "black",
+        padding: 10,
+        marginBottom: 3,
+        backgroundColor: 'white',
     }
 })
