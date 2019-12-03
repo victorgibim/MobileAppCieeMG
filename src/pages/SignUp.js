@@ -259,7 +259,7 @@ export default class SignUp extends Component {
     buscarEscola = async() => {
         fetch(`http://api.cieemg.org.br:9001/escolas/${this.state.escola}`).then(res => res.json()).then(data => {
             this.setState({
-                escolas: data.map(this.state.escolas.razaosocial)
+                escolas: data
             })
             console.log(data)
         }).catch(err =>{
@@ -268,7 +268,8 @@ export default class SignUp extends Component {
     }
 
 
-    
+
+
     render(){
         const cep = this.state.cep;
         const sexo = this.state.sexo;
@@ -568,6 +569,14 @@ export default class SignUp extends Component {
                         <Icon name="search" size={20} color="#FFF"/>
                     </TouchableOpacity>                       
                     </View>
+
+                    {/* <Autocomplete data={data} defaultValue={query} onChangeText={text => this.setState({query : text})} renderItem={({item, i}) => (
+                        <TouchableOpacity onPress={() => this.setState({query : item})}>
+                            <Text>{item}</Text>
+                        </TouchableOpacity>
+                    )}>
+
+                    </Autocomplete> */}
 
                     <View style={styles.view}>
                     <Text style={{ marginBottom: 3 }}>Curso</Text>
