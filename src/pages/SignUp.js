@@ -18,6 +18,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { AsyncStorage } from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import Autocomplete from 'react-native-autocomplete-input';
 
 import logo from '../assets/Logo.png';
 import api from '../assets/services/api';
@@ -238,6 +239,10 @@ export default class SignUp extends Component {
             bairro: '',
             cidade: '',
             uf: '',
+        },
+        escolas: {
+            id: '',
+            razaosocial: '',
         }
     };
     buscarCep = async () => {
@@ -251,6 +256,17 @@ export default class SignUp extends Component {
      });
 
     }
+    buscarEscola = async() => {
+        fetch(`http://api.cieemg.org.br:9001/escolas/${this.state.escola}`).then(res => res.json()).then(data => {
+            this.setState({
+                escolas: data.map(this.state.escolas.razaosocial)
+            })
+            console.log(data)
+        }).catch(err =>{
+            console.log(err)
+        });
+    }
+
 
     
     render(){
@@ -281,7 +297,7 @@ export default class SignUp extends Component {
                 <React.Fragment>
                     <View style={styles.view}>
                     <Text style={{ marginBottom: 3 }}>Nome</Text>
-                    <TextInput style={styles.input} placeholder="Nome"
+                    <TextInput style={styles.input} 
                     onChangeText={formikProps.handleChange("name")}
                     autoCapitalize='words'
                     />
@@ -544,10 +560,13 @@ export default class SignUp extends Component {
 
                     <View style={styles.view}>
                     <Text style={{ marginBottom: 3 }}>Escola onde estuda ou estudou</Text>
-                    <TextInput style={styles.input} placeholder="Escola onde estuda ou estudou"
-                    onChangeText={formikProps.handleChange("escola")}
+                    <TextInput value={this.state.escola} style={styles.input} placeholder="Escola onde estuda ou estudou"
+                    onChangeText={escola => {this.setState({ escola })}}
                     />
-                    <Text style={{ color: 'red' }}>{formikProps.errors.escola}</Text>                        
+                    <Text style={{ color: 'red' }}>{formikProps.errors.escola}</Text>
+                    <TouchableOpacity style={styles.searchButton} onPress={this.buscarEscola}>
+                        <Icon name="search" size={20} color="#FFF"/>
+                    </TouchableOpacity>                       
                     </View>
 
                     <View style={styles.view}>
