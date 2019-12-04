@@ -74,6 +74,7 @@ const validationSchema = yup.object().shape({
     .string()
     .required()
     .label('Nome da Mãe')
+    .max(8)
     .test(
         'test-name', 'Nome não Pode conter Número',
         function(value) {
@@ -89,6 +90,7 @@ const validationSchema = yup.object().shape({
     .string()
     .required()
     .label('CEP')
+    .min(1)
     .test(
         'test-name', 'Nome não Pode conter Número',
         function(value) {
@@ -218,7 +220,10 @@ const validationSchema = yup.object().shape({
     .required()
     .label('Mês de Formatura'),
     periodo: yup
-    .number()
+    .date()
+    .default(function(){
+        return new Date();
+    })
     .required()
     .label('Periodo/Ano/Ciclo/Módulo'),
     horario: yup
@@ -267,9 +272,6 @@ export default class SignUp extends Component {
         });
     }
 
-
-
-
     render(){
         const cep = this.state.cep;
         const sexo = this.state.sexo;
@@ -307,7 +309,7 @@ export default class SignUp extends Component {
 
                     <View style={styles.view}>
                     <Text style={{ marginBottom: 3 }}>CPF</Text>
-                    <TextInput style={styles.input} placeholder="CPF"
+                    <TextInput style={styles.input} placeholder="CPF" maxLength={11}
                     onChangeText={formikProps.handleChange("cpf")}
                     keyboardType='numeric'
                     />
@@ -404,6 +406,7 @@ export default class SignUp extends Component {
                     <View style={styles.view}>
                     <Text style={{ marginBottom: 3 }}>CEP</Text>
                     <TextInput value={this.state.cep} style={styles.input} placeholder="CEP" keyboardType='numeric'
+                    maxLength={8}
                     onChangeText={cep => {this.setState({ cep })}}
                     />
                     <Text style={{ color: 'red' }}>{formikProps.errors.cep}</Text>  
@@ -508,7 +511,7 @@ export default class SignUp extends Component {
                     <Text style={{ marginBottom: 3 }}>Telefone 1</Text>
                     <TextInput style={styles.input} placeholder="Telefone 1"
                     onChangeText={formikProps.handleChange("telefone1")}
-                    keyboardType='numeric'
+                    keyboardType='phone-pad'
                     />
                     <Text style={{ color: 'red' }}>{formikProps.errors.telefone1}</Text>                        
                     </View>
@@ -517,7 +520,7 @@ export default class SignUp extends Component {
                     <Text style={{ marginBottom: 3 }}>Telefone 2</Text>
                     <TextInput style={styles.input} placeholder="Telefone 2"
                     onChangeText={formikProps.handleChange("telefone2")}
-                    keyboardType='numeric'
+                    keyboardType='phone-pad'
                     />
                     <Text style={{ color: 'red' }}>{formikProps.errors.telefone2}</Text>                        
                     </View>
@@ -537,7 +540,7 @@ export default class SignUp extends Component {
 
                     <View style={styles.view}>
                         <Text style={{marginBottom: 3}}>Senha</Text>
-                        <TextInput  placeholder="Senha" style={styles.input}
+                        <TextInput  placeholder="Senha" style={styles.input} maxLength={12}
                         onChangeText={formikProps.handleChange('password')}
                         onBlur={formikProps.handleBlur('password')}
                         secureTextEntry
@@ -549,7 +552,7 @@ export default class SignUp extends Component {
 
                     <View style={styles.view}>
                         <Text style={{marginBottom: 3}}>Confirmar Senha</Text>
-                        <TextInput  placeholder="Confirmar Senha" style={styles.input}
+                        <TextInput  placeholder="Confirmar Senha" style={styles.input} maxLength={12}
                         onChangeText={formikProps.handleChange('confirmPassword')}
                         onBlur={formikProps.handleBlur('confirmPassword')}
                         secureTextEntry
@@ -613,7 +616,7 @@ export default class SignUp extends Component {
 
                     <View style={styles.view}>
                     <Text style={{ marginBottom: 3 }}>Periodo/Ano/Ciclo/Módulo</Text>
-                    <TextInput style={styles.input} placeholder="Periodo/Ano/Ciclo/Módulo"
+                    <TextInput style={styles.input} placeholder="Periodo/Ano/Ciclo/Módulo" 
                     onChangeText={formikProps.handleChange("periodo")}
                     />
                     <Text style={{ color: 'red' }}>{formikProps.errors.periodo}</Text>                        
