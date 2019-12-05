@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { 
     StyleSheet,
     Keyboard, 
+    View, 
     TextInput, 
     Text,
     ScrollView,
-    View, 
     SafeAreaView, 
     ActivityIndicator, 
     Button,
@@ -14,11 +14,11 @@ import {
     SubmitButton,
     TouchableOpacity
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import { AsyncStorage } from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import Autocomplete from 'react-native-autocomplete-input';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import logo from '../assets/Logo.png';
 import api from '../assets/services/api';
@@ -239,16 +239,17 @@ export default class SignUp extends Component {
         civil: 'solteiro',
         deficiencia: 'nao',
         cep: '',
+        escola: '',
         dados: {
             logradouro: '',
             bairro: '',
             cidade: '',
             uf: '',
         },
-        escolas: {
+        escolas: [{
             id: '',
             razaosocial: '',
-        }
+        }]
     };
     buscarCep = async () => {
      fetch(`http://api.cieemg.org.br:9001/cep/${this.state.cep}`).then(res => res.json()).then(data =>{
@@ -261,18 +262,45 @@ export default class SignUp extends Component {
      });
 
     }
-    buscarEscola = async() => {
-        fetch(`http://api.cieemg.org.br:9001/escolas/${this.state.escola}`).then(res => res.json()).then(data => {
-            this.setState({
-                escolas: data
-            })
-            console.log(data)
-        }).catch(err =>{
-            console.log(err)
+    // buscarEscola = async() => {
+    //     fetch(`http://api.cieemg.org.br:9001/escolas/${this.state.escola}`).then(res => res.json()).then(data => {
+    //         this.setState({
+    //             escolas: data
+    //         })
+    //         console.log(data)
+    //     }).catch(err =>{
+    //         console.log(err)
+    //     });
+    // }
+    
+    buscarEscolas = async () => {
+        const { escolas } = this.state;
+        const data = await api.get('/escolas');
+        
+        return this.setState({...escolas, data})
+    }
+
+    componentDidMount() {
+        fetch(`https://api.cieemg.org.br:9001/escolas/`).then(res => res.json()).then((json) => {
+          const { results: escolas } = json;
+          this.setState({ escolas });
         });
     }
 
+    findEscolas(query) {
+        if (query === '') {
+          return [];
+        }
+    
+        const { escolas } = this.state;
+        const regex = new RegExp(`${query.trim()}`, 'i');
+        return escolas.filter(escola => escolas.razaosocial.search(regex) >= 0);
+      }
+
+
     render(){
+        const escola = this.state;
+        const escolas = this.findEscolas(escola)
         const cep = this.state.cep;
         const sexo = this.state.sexo;
         const orgao = this.state.orgao;
@@ -563,12 +591,28 @@ export default class SignUp extends Component {
                     </View>
 
                     <View style={styles.view}>
+                    <Autocomplete 
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        data={escolas.length === 1}
+                        defaultValue={escola}
+                        onChangeText={text => this.setState({escola: text})}
+                        placeholder="Digite sua escola"
+                        renderItem={({ razaosocial, release_date}) => (
+                            <TouchableOpacity onPress={() => this.setState({ escola: razaosocial })}>
+                            <Text>
+                              {razaosocial} ({release_date.split('-')[0]})
+                            </Text>
+                          </TouchableOpacity>
+                        )} 
+                    />
+                        
                     <Text style={{ marginBottom: 3 }}>Escola onde estuda ou estudou</Text>
                     <TextInput value={this.state.escola} style={styles.input} placeholder="Escola onde estuda ou estudou"
-                    onChangeText={escola => {this.setState({ escola })}}
+    
                     />
                     <Text style={{ color: 'red' }}>{formikProps.errors.escola}</Text>
-                    <TouchableOpacity style={styles.searchButton} onPress={this.buscarEscola}>
+                    <TouchableOpacity style={styles.searchButton} >
                         <Icon name="search" size={20} color="#FFF"/>
                     </TouchableOpacity>                       
                     </View>
