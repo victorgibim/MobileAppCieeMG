@@ -233,24 +233,27 @@ const validationSchema = yup.object().shape({
 })
 
 export default class SignUp extends Component { 
-    state = {
-        sexo: 'masculino',
-        orgao: 'ssp',
-        civil: 'solteiro',
-        deficiencia: 'nao',
-        cep: '',
-        escola: '',
-        dados: {
-            logradouro: '',
-            bairro: '',
-            cidade: '',
-            uf: '',
-        },
-        escolas: [{
-            id: '',
-            razaosocial: '',
-        }]
-    };
+   state = {
+            sexo: 'masculino',
+            orgao: 'ssp',
+            civil: 'solteiro',
+            deficiencia: 'nao',
+            cep: '',
+            escola: '',
+            dados: {
+                logradouro: '',
+                bairro: '',
+                cidade: '',
+                uf: '',
+            },
+            escolas: [{
+                id: '',
+                razaosocial: '',
+            }],
+            query: ''
+        };
+
+    
     buscarCep = async () => {
      fetch(`http://api.cieemg.org.br:9001/cep/${this.state.cep}`).then(res => res.json()).then(data =>{
          this.setState({
@@ -272,6 +275,16 @@ export default class SignUp extends Component {
     //         console.log(err)
     //     });
     // }
+    static renderEscola(escola) {
+        const { razaosocial, id} = escola;
+
+        return (
+            <View>
+                <Text style={styles.textCep}>{id}</Text>
+                <Text style={styles.textCep}>{razaosocial}</Text>
+            </View>
+        );
+    }
     
     buscarEscolas = async () => {
         const { escolas } = this.state;
@@ -279,28 +292,29 @@ export default class SignUp extends Component {
         
         return this.setState({...escolas, data})
     }
-
+    
     componentDidMount() {
-        fetch(`https://api.cieemg.org.br:9001/escolas/`).then(res => res.json()).then((json) => {
-          const { results: escolas } = json;
-          this.setState({ escolas });
+        fetch(`http://api.cieemg.org.br:9001/escolas/`).then(res => res.json()).then((json) => {
+            const { results: escolas } = json;
+            this.setState({ escolas });
         });
     }
-
+    
     findEscolas(query) {
         if (query === '') {
-          return [];
+            return [];
         }
-    
+        
         const { escolas } = this.state;
-        const regex = new RegExp(`${query.trim()}`, 'i');
-        return escolas.filter(escola => escolas.razaosocial.search(regex) >= 0);
-      }
-
-
+        const regex = new RegExp(`${query}`, 'i');
+        return escolas.filter(escola => escola.razaosocial.search(regex) > 0);
+    }
+    
     render(){
-        const escola = this.state;
-        const escolas = this.findEscolas(escola)
+
+        const {query} = this.state;
+        const escolas = this.findEscolas(query);
+        const comp = (a, b) => a.toLowerCase() === b.toLowerCase();
         const cep = this.state.cep;
         const sexo = this.state.sexo;
         const orgao = this.state.orgao;
@@ -594,23 +608,34 @@ export default class SignUp extends Component {
                     <Autocomplete 
                         autoCapitalize="none"
                         autoCorrect={false}
-                        data={escolas.length === 1}
-                        defaultValue={escola}
-                        onChangeText={text => this.setState({escola: text})}
+                        data={escolas.length === 1 && comp(query, escolas[0].razaosocial) ? [] : escolas}
+                        defaultValue={query}
+                        onChangeText={text => this.setState({query: text})}
                         placeholder="Digite sua escola"
                         renderItem={({ razaosocial, release_date}) => (
-                            <TouchableOpacity onPress={() => this.setState({ escola: razaosocial })}>
+                            <TouchableOpacity onPress={() => this.setState({ query: razaosocial })}>
                             <Text>
                               {razaosocial} ({release_date.split('-')[0]})
                             </Text>
                           </TouchableOpacity>
                         )} 
                     />
+
+                    <View style={styles.view}>
+                        {escolas.length > 0 ? (
+                            SignUp.renderEscola(escolas[0])
+                        ) : (
+                            <Text style={styles.textCep}>
+                                Escolas
+                            </Text>
+                        )}
+                    </View>
+                    
                         
-                    <Text style={{ marginBottom: 3 }}>Escola onde estuda ou estudou</Text>
+                    {/* <Text style={{ marginBottom: 3 }}>Escola onde estuda ou estudou</Text>
                     <TextInput value={this.state.escola} style={styles.input} placeholder="Escola onde estuda ou estudou"
     
-                    />
+                    /> */}
                     <Text style={{ color: 'red' }}>{formikProps.errors.escola}</Text>
                     <TouchableOpacity style={styles.searchButton} >
                         <Icon name="search" size={20} color="#FFF"/>
