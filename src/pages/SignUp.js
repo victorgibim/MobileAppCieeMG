@@ -276,7 +276,7 @@ export default class SignUp extends Component {
     //     });
     // }
     static renderEscola(escola) {
-        const { razaosocial, id} = escola;
+        const { id, razaosocial} = escola;
 
         return (
             <View>
@@ -307,7 +307,7 @@ export default class SignUp extends Component {
         
         const { escolas } = this.state;
         const regex = new RegExp(`${query}`, 'i');
-        return escolas.filter(escola => escola.razaosocial.search(regex) > 0);
+        return escolas.filter(escola => escola.id.razaosocial.search(regex) > 0);
     }
     
     render(){
