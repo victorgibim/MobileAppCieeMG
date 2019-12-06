@@ -286,12 +286,12 @@ export default class SignUp extends Component {
         );
     }
     
-    buscarEscolas = async () => {
-        const { escolas } = this.state;
-        const data = await api.get('/escolas');
+    // buscarEscolas = async () => {
+    //     const { escolas } = this.state;
+    //     const data = await api.get('/escolas');
         
-        return this.setState({...escolas, data})
-    }
+    //     return this.setState({...escolas, data})
+    // }
     
     componentDidMount() {
         fetch(`http://api.cieemg.org.br:9001/escolas/`).then(res => res.json()).then((json) => {
@@ -307,7 +307,7 @@ export default class SignUp extends Component {
         
         const { escolas } = this.state;
         const regex = new RegExp(`${query}`, 'i');
-        return escolas.filter(escola => escola.id.razaosocial.search(regex) > 0);
+        return escolas.filter(escola => escola.razaosocial.search(regex) > 0);
     }
     
     render(){
