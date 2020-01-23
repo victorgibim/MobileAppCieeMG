@@ -1,3 +1,4 @@
+import Autocomplete from 'react-native-autocomplete-input';
 import React, { Component } from 'react';
 import { 
     StyleSheet,
@@ -17,7 +18,6 @@ import {
 import { AsyncStorage } from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import Autocomplete from 'react-native-autocomplete-input';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import logo from '../assets/Logo.png';
@@ -250,7 +250,8 @@ export default class SignUp extends Component {
                 id: '',
                 razaosocial: '',
             }],
-            query: ''
+            query: '',
+            id: [],
         };
 
     
@@ -266,21 +267,24 @@ export default class SignUp extends Component {
 
     }
     // buscarEscola = async() => {
-    //     fetch(`http://api.cieemg.org.br:9001/escolas/${this.state.escola}`).then(res => res.json()).then(data => {
+    //     fetch(`http://api.cieemg.org.br:9001/escolas/id/${this.state.razaosocial}`).then(res => res.json()).then(data => {
     //         this.setState({
     //             escolas: data
+    //         })
+    //         const razaosocial = escolas.filter(function(id) {
+    //             return id.razaosocial == 'razaosocial'
     //         })
     //         console.log(data)
     //     }).catch(err =>{
     //         console.log(err)
     //     });
     // }
-    static renderEscola(escola) {
-        const { id, razaosocial} = escola;
+    static renderEscola(id) {
+        const { razaosocial} = id;
 
         return (
             <View>
-                <Text style={styles.textCep}>{id}</Text>
+                {/* <Text style={styles.textCep}>{id}</Text> */}
                 <Text style={styles.textCep}>{razaosocial}</Text>
             </View>
         );
@@ -293,27 +297,27 @@ export default class SignUp extends Component {
     //     return this.setState({...escolas, data})
     // }
     
-    // componentDidMount() {
-    //     fetch(`http://api.cieemg.org.br:9001/escolas/`).then(res => res.json()).then((json) => {
-    //         const { results: escolas } = json;
-    //         this.setState({ escolas });
-    //     });
-    // }
+    componentDidMount() {
+        fetch(`http://api.cieemg.org.br:9001/escolas/${this.state.id}/`).then(res => res.json()).then((json) => {
+            const { results: id } = json;
+            this.setState({ id });
+        });
+    }
     
     findEscolas(query) {
         if (query === '') {
             return [];
         }
         
-        const { escolas } = this.state.escolas;
+        const { id } = this.state;
         const regex = new RegExp(`${query}`, 'i');
-        return escola = escolas.filter(escolas => escolas.razaosocial.search(regex) > 0);
+        return id.filter(id => id.razaosocial.search(regex) >= 0);
     }
     
     render(){
 
         const {query} = this.state;
-        const escolas = this.findEscolas(query);
+        const id = this.findEscolas(query);
         const comp = (a, b) => a.toLowerCase() === b.toLowerCase();
         const cep = this.state.cep;
         const sexo = this.state.sexo;
@@ -608,7 +612,7 @@ export default class SignUp extends Component {
                     <Autocomplete 
                         autoCapitalize="none"
                         autoCorrect={false}
-                        data={escolas.length === 1 && comp(query, escolas[0].razaosocial) ? [] : escolas}
+                        data={id.length === 1 && comp(query, id[0].razaosocial) ? [] : id}
                         defaultValue={query}
                         onChangeText={text => this.setState({query: text})}
                         placeholder="Digite sua escola"
@@ -622,11 +626,11 @@ export default class SignUp extends Component {
                     />
 
                     <View style={styles.view}>
-                        {escolas.length > 0 ? (
-                            SignUp.renderEscola(escolas[0])
+                        {id.length > 0 ? (
+                            SignUp.renderEscola(id[0])
                         ) : (
                             <Text style={styles.textCep}>
-                                Escolas
+                                
                             </Text>
                         )}
                     </View>
