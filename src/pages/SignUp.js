@@ -293,21 +293,21 @@ export default class SignUp extends Component {
     //     return this.setState({...escolas, data})
     // }
     
-    componentDidMount() {
-        fetch(`http://api.cieemg.org.br:9001/escolas/`).then(res => res.json()).then((json) => {
-            const { results: escolas } = json;
-            this.setState({ escolas });
-        });
-    }
+    // componentDidMount() {
+    //     fetch(`http://api.cieemg.org.br:9001/escolas/`).then(res => res.json()).then((json) => {
+    //         const { results: escolas } = json;
+    //         this.setState({ escolas });
+    //     });
+    // }
     
     findEscolas(query) {
         if (query === '') {
             return [];
         }
         
-        const { escolas } = this.state;
+        const { escolas } = this.state.escolas;
         const regex = new RegExp(`${query}`, 'i');
-        return escolas.filter(escola => escola.razaosocial.search(regex) > 0);
+        return escola = escolas.filter(escolas => escolas.razaosocial.search(regex) > 0);
     }
     
     render(){
