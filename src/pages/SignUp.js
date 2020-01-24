@@ -233,6 +233,18 @@ const validationSchema = yup.object().shape({
 })
 
 export default class SignUp extends Component { 
+    static renderEscola(objects) {
+        const { id, razaosocial} = objects;
+    
+        return (
+            <View>
+                <Text style={styles.textCep}>{id}</Text>
+                <Text style={styles.textCep}>({razaosocial})</Text>
+            </View>
+        );
+    }
+    
+
    state = {
             sexo: 'masculino',
             orgao: 'ssp',
@@ -279,16 +291,6 @@ export default class SignUp extends Component {
     //         console.log(err)
     //     });
     // }
-    static renderEscola(id) {
-        const { razaosocial} = id;
-
-        return (
-            <View>
-                {/* <Text style={styles.textCep}>{id}</Text> */}
-                <Text style={styles.textCep}>{razaosocial}</Text>
-            </View>
-        );
-    }
     
     // buscarEscolas = async () => {
     //     const { escolas } = this.state;
@@ -303,21 +305,21 @@ export default class SignUp extends Component {
             this.setState({ id });
         });
     }
-    
     findEscolas(query) {
         if (query === '') {
             return [];
         }
         
-        const { id } = this.state;
+        const { object } = this.state;
         const regex = new RegExp(`${query}`, 'i');
-        return id.filter(id => id.razaosocial.search(regex) >= 0);
+        return object.filter(objects => objects.razaosocial.search(regex) >= 0);
+    
     }
     
     render(){
 
         const {query} = this.state;
-        const id = this.findEscolas(query);
+        const object = this.findEscolas(query);
         const comp = (a, b) => a.toLowerCase() === b.toLowerCase();
         const cep = this.state.cep;
         const sexo = this.state.sexo;
@@ -611,39 +613,29 @@ export default class SignUp extends Component {
                     <View style={styles.view}>
                     <Autocomplete 
                         autoCapitalize="none"
+                        key={object.razaosocial}
                         autoCorrect={false}
-                        data={id.length === 1 && comp(query, id[0].razaosocial) ? [] : id}
+                        data={object.length === 1 && comp(query, object[0].razaosocial) ? [] : object}
                         defaultValue={query}
                         onChangeText={text => this.setState({query: text})}
                         placeholder="Digite sua escola"
                         renderItem={({ razaosocial, release_date}) => (
                             <TouchableOpacity onPress={() => this.setState({ query: razaosocial })}>
                             <Text>
-                              {razaosocial} ({release_date.split('-')[0]})
+                              {razaosocial} ({release_date.split(' ')[0]})
                             </Text>
                           </TouchableOpacity>
                         )} 
                     />
 
-                    <View style={styles.view}>
-                        {id.length > 0 ? (
-                            SignUp.renderEscola(id[0])
-                        ) : (
-                            <Text style={styles.textCep}>
-                                
-                            </Text>
-                        )}
-                    </View>
-                    
-                        
                     {/* <Text style={{ marginBottom: 3 }}>Escola onde estuda ou estudou</Text>
                     <TextInput value={this.state.escola} style={styles.input} placeholder="Escola onde estuda ou estudou"
     
                     /> */}
                     <Text style={{ color: 'red' }}>{formikProps.errors.escola}</Text>
-                    <TouchableOpacity style={styles.searchButton} >
+                    {/* <TouchableOpacity style={styles.searchButton} >
                         <Icon name="search" size={20} color="#FFF"/>
-                    </TouchableOpacity>                       
+                    </TouchableOpacity>                        */}
                     </View>
 
                     {/* <Autocomplete data={data} defaultValue={query} onChangeText={text => this.setState({query : text})} renderItem={({item, i}) => (
@@ -744,6 +736,7 @@ const styles = StyleSheet.create({
     view: {
         marginHorizontal: 20,
         marginVertical: 5,
+        zIndex: 1,
     },
     logo:{
         height: 50,
